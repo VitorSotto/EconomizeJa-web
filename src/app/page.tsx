@@ -1,18 +1,23 @@
-import Image from 'next/image'
-import { api } from '@/lib/api'
+'use client'
 
-import { Search } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
+
+import { api } from '@/lib/api'
+import { SearchBar } from '@/components/SearchBar'
+import { Pagination } from '@/components/Pagination'
 
 import shopping from '../assets/shopping.svg'
 import logo from '../assets/logo.svg'
 import background from '../assets/background.svg'
-
 import ToninLogo from '../assets/Tonin_logo.png'
 import AtacadaoLogo from '../assets/Atacadao_logo.jpeg'
 import SavegnagoLogo from '../assets/Savegnago_logo.png'
 
 export default async function Home() {
-  const response = await api.get('/api/products/Arroz')
+  const [page, setPage] = useState<number>(1)
+
+  const { data: response } = await api.get(`/api/products/${page}`)
 
   return (
     <div className="relative">
@@ -29,7 +34,7 @@ export default async function Home() {
 
         {/* FORM DE BUSCA */}
         <div className="flex w-full items-center justify-center">
-          <form className="flex items-center justify-center gap-6 rounded-lg bg-gray-50 p-2">
+          {/* <form className="flex items-center justify-center gap-6 rounded-lg bg-gray-50 p-2">
             <div className="flex gap-2">
               <select
                 name="category"
@@ -61,7 +66,8 @@ export default async function Home() {
             <button className="h-8 w-8" type="submit">
               <Search className="text-green-300 hover:text-green-200" />
             </button>
-          </form>
+          </form> */}
+          <SearchBar />
         </div>
       </div>
 
@@ -84,7 +90,7 @@ export default async function Home() {
       </div>
 
       {/* PRODUCTS */}
-      <div className="relative z-10 m-auto grid w-4/5 grid-cols-4 gap-4">
+      <div className="relative z-10 m-auto grid w-4/5 grid-cols-4 gap-4 py-4">
         {response.data.map((product: any) => (
           <a
             key={product.id}
@@ -138,6 +144,8 @@ export default async function Home() {
           </a>
         ))}
       </div>
+
+      <Pagination page={page} setPage={setPage} />
 
       {/* BACKGROUD */}
       <Image
