@@ -1,36 +1,29 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
 
-import { api } from '@/lib/api'
 import { SearchBar } from '@/components/SearchBar'
-import { Pagination } from '@/components/Pagination'
-
+// import { Pagination } from '@/components/Pagination'
 import shopping from '../assets/shopping.svg'
 import logo from '../assets/logo.svg'
 import background from '../assets/background.svg'
-import ToninLogo from '../assets/Tonin_logo.png'
-import AtacadaoLogo from '../assets/Atacadao_logo.jpeg'
-import SavegnagoLogo from '../assets/Savegnago_logo.png'
+import { Products } from '@/components/Products'
+import { Suspense } from 'react'
 
 export default async function Home() {
-  const [page, setPage] = useState<number>(1)
+  const category = ''
+  // console.log(response.data)
 
-  const { data: response } = await api.get(`/api/products/${page}`)
+  // limite de pagina
 
   return (
     <div className="relative">
       {/* HEADER */}
       <div className="relative z-10 flex w-full flex-row items-center bg-green-300 px-4 py-2">
         {/* LOGO */}
-        <Image
-          className="absolute"
-          src={logo}
-          width={68}
-          height={62}
-          alt="logo Ej"
-        />
+        <a className="absolute" href="#">
+          <Image src={logo} width={68} height={62} alt="logo Ej" />
+        </a>
 
         {/* FORM DE BUSCA */}
         <div className="flex w-full items-center justify-center">
@@ -66,8 +59,10 @@ export default async function Home() {
             <button className="h-8 w-8" type="submit">
               <Search className="text-green-300 hover:text-green-200" />
             </button>
-          </form> */}
-          <SearchBar />
+          </form> 
+          <SearchBar category={0} />
+          */}
+          <SearchBar category={category} />
         </div>
       </div>
 
@@ -90,62 +85,10 @@ export default async function Home() {
       </div>
 
       {/* PRODUCTS */}
-      <div className="relative z-10 m-auto grid w-4/5 grid-cols-4 gap-4 py-4">
-        {response.data.map((product: any) => (
-          <a
-            key={product.id}
-            href="#"
-            className="relative flex flex-col items-center gap-8 rounded-3xl bg-gray-50 p-4 drop-shadow-lg transition-colors hover:bg-gray-100"
-          >
-            <Image
-              width={120}
-              height={120}
-              src={product.product.image}
-              alt={product.name}
-            />
-            <div className="flex flex-col items-center justify-center">
-              <span className="text-center text-sm font-semibold text-gray-500">
-                {product.product.name}
-              </span>
-              <p className="text-sm font-light text-gray-400">
-                {product.product.market}
-              </p>
-            </div>
-            <p className="flex items-center text-2xl font-bold text-green-400">
-              R$ {product.price}
-            </p>
-            {product.product.market === 'Tonin' && (
-              <Image
-                className="absolute bottom-0 right-0 rounded-full border-2 border-green-300 hover:border-green-200"
-                width={48}
-                height={48}
-                src={ToninLogo}
-                alt="Tonin Logo"
-              />
-            )}
-            {product.product.market === 'Atacadão' && (
-              <Image
-                className="absolute bottom-0 right-0 rounded-full border-2 border-green-300 hover:border-green-200"
-                width={48}
-                height={48}
-                src={AtacadaoLogo}
-                alt="Atacadão Logo"
-              />
-            )}
-            {product.product.market === 'Savegnago' && (
-              <Image
-                className="absolute bottom-0 right-0 rounded-full border-2 border-green-300 hover:border-green-200"
-                width={48}
-                height={48}
-                src={SavegnagoLogo}
-                alt="Savegnago Logo"
-              />
-            )}
-          </a>
-        ))}
-      </div>
-
-      <Pagination page={page} setPage={setPage} />
+      <Suspense fallback={<p>carregando...</p>}>
+        <Products category={category} />
+      </Suspense>
+      {/*  */}
 
       {/* BACKGROUD */}
       <Image

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['www.supertonin.com.br', 'savegnagoio.vtexassets.com' ],
+    domains: ['www.supertonin.com.br', 'savegnagoio.vtexassets.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,6 +20,7 @@ const nextConfig = {
         hostname: 'toninstr.blob.core.windows.net/**',
       },
     ],
-},}
+  },
+}
 
 module.exports = nextConfig
