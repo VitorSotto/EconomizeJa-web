@@ -1,12 +1,14 @@
 'use client'
 
 import { CategoryContext } from '@/app/contexts/CategoryContext'
+import { SearchContext } from '@/app/contexts/SearchContext'
 import { Search } from 'lucide-react'
-import { type } from 'os'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 
 export function SearchBar() {
+  const { searchContent, searchInput } = useContext(SearchContext)
   const { category, alter } = useContext(CategoryContext)
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
   }
@@ -14,6 +16,11 @@ export function SearchBar() {
   function setSelectedCategory(value: string) {
     console.log(value)
     alter(value)
+  }
+
+  function setInputSearch(value: string) {
+    console.log(value)
+    searchInput(value)
   }
   return (
     <form
@@ -27,6 +34,7 @@ export function SearchBar() {
           className="form-select border-none bg-transparent text-gray-500 focus:ring-0"
           value={category}
           onChange={(e) => setSelectedCategory(e.target.value)}
+          disabled={!!searchContent}
         >
           <option value={''}>Todas as Categorias</option>
           <option value="Arroz">Arroz</option>
@@ -48,7 +56,8 @@ export function SearchBar() {
           id="search"
           placeholder="Digite sua busca..."
           autoComplete="false"
-          onChange={() => {}}
+          value={searchContent}
+          onChange={(e) => setInputSearch(e.target.value)}
         />
       </div>
       <button className="h-8 w-8" type="submit">

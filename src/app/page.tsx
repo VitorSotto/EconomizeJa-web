@@ -12,6 +12,7 @@ import { Suspense } from 'react'
 
 export default async function Home() {
   const category = ''
+  const searchContent = ''
   // console.log(response.data)
 
   // limite de pagina
@@ -19,7 +20,7 @@ export default async function Home() {
   return (
     <div className="relative">
       {/* HEADER */}
-      <div className="relative z-10 flex w-full flex-row items-center bg-green-300 px-4 py-2">
+      <div className="relative z-0 flex w-full flex-row items-center bg-green-300 px-4 py-2">
         {/* LOGO */}
         <a className="absolute" href="#">
           <Image src={logo} width={68} height={62} alt="logo Ej" />
@@ -67,7 +68,7 @@ export default async function Home() {
       </div>
 
       {/* HERO */}
-      <div className="relative z-10 my-16 flex flex-row items-center justify-between gap-8 px-40">
+      <div className="relative z-0 my-16 flex flex-row items-center justify-between gap-8 px-40">
         <div className="w-1/2 text-center">
           <h1 className=" text-3xl font-bold text-green-600">
             BUSQUE SEMPRE OS MAIS BARATOS
@@ -85,14 +86,20 @@ export default async function Home() {
       </div>
 
       {/* PRODUCTS */}
-      <Suspense fallback={<p>carregando...</p>}>
+      <Suspense
+        fallback={
+          <p className="text-bold flex items-center justify-center gap-10 text-green-300">
+            carregando...
+          </p>
+        }
+      >
         <Products category={category} />
       </Suspense>
       {/*  */}
 
       {/* BACKGROUD */}
       <Image
-        className="absolute top-16 z-0"
+        className="absolute top-16 z-[-1]"
         src={background}
         width={1920}
         height={800}

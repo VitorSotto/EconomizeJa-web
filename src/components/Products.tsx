@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { Pagination } from './Pagination'
 import { ModalProduct } from './Modal'
 import { CategoryContext } from '@/app/contexts/CategoryContext'
+import { SearchContext } from '@/app/contexts/SearchContext'
 
 interface ProductType {
   id: string
@@ -34,54 +35,78 @@ interface ResponseProductType {
   pageSize?: number
   totalCount?: number
   totalPages?: number
+  filter?: any
 }
 
 export async function Products() {
   const { category } = useContext(CategoryContext)
+  const { searchContent } = useContext(SearchContext)
   const [data, setData] = useState<ResponseProductType>({ data: [], page: 1 })
   const [page, setPage] = useState<number>(1)
+  // const [showResults, setShowResults] = useState(false)
   // const [category, setCategory] = useState<string>('Arroz')
   // const [count, setCount] = useState<ResponseProductType>({})
   // const [data, setData] = useState<ResponseProductType>({})
   // const [data, setData] = useState<ResponseProductType>({})
 
-  async function GetDataProducts(pageNumber: number, category: string) {
-    if (category === '') {
+  async function GetDataProducts(
+    pageNumber: number,
+    category: string,
+    searchContent: string,
+  ) {
+    // priorizar category ou search & caso haja os dois
+    // Search
+    if (searchContent === '' && category === '') {
       const { data: response } = await api.get(`/api/products/${pageNumber}`)
-
       return response
-    } else {
-      const { data: response } = await api.get(
-        `/api/products/${category}/${pageNumber}`,
-      )
+    }
 
+    if (category) {
+      // console.log('passou')
+      const { data: response } = await api.get(
+        `/api/products/category/${category}/${pageNumber}`,
+      )
+      return response
+    }
+    // search
+    else {
+      console.log('else')
+      const { data: response } = await api.get(
+        `/api/products/search/${searchContent}/${pageNumber}`,
+      )
       return response
     }
   }
 
   useEffect(() => {
     async function fetchData() {
-      const result = await GetDataProducts(page, category)
-      console.log(result)
+      // console.log(searchContent)
+      const result = await GetDataProducts(page, category, searchContent)
       setPage(result.page)
       setData(result)
+      console.log(result)
+
+      //
+      // setShowResults(true)
     }
 
     fetchData()
-  }, [page, category])
+  }, [page, category, searchContent])
 
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const openModal = () => {
     setModalIsOpen(true)
+    // console.log(setModalIsOpen)
   }
 
   const closeModal = () => {
     setModalIsOpen(false)
+    // console.log(setModalIsOpen)
   }
 
   return (
-    <>
+    <div className="relative z-0">
       <div className="relative z-10 m-auto grid w-4/5 grid-cols-4 gap-4 py-4">
         {data?.data?.map((product: any) => (
           <button key={product.id} onClick={openModal}>
@@ -136,9 +161,9 @@ export async function Products() {
             </a>
           </button>
         ))}
-        <ModalProduct isOpen={modalIsOpen} onRequestClose={closeModal} />
       </div>
       <Pagination page={page} setPage={setPage} totalPages={data?.totalPages} />
-    </>
+      <ModalProduct isOpen={modalIsOpen} onRequestClose={closeModal} />
+    </div>
   )
 }
